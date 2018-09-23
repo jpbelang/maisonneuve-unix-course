@@ -138,7 +138,7 @@ On peut être gentil:
 jpbelang     25872  0.5  0.2 218512  4044 pts/0    S    09:53   0:00 nice -n 10 sleep 30
 jpbelang     25880  0.0  0.0 107948   352 pts/0    SN   09:54   0:00 sleep 30
 ```
-root peut être méchant
+`root` peut être méchant
 ```
 root     25917  1.0  0.2 218516  4016 pts/0    S    09:54   0:00 sudo nice -n -10 sleep 30
 root     25918  0.1  0.0 107948   348 pts/0    S<   09:54   0:00 sleep 30
@@ -150,16 +150,3 @@ root     25918  0.1  0.0 107948   348 pts/0    S<   09:54   0:00 sleep 30
 Nohup permet à une commande d'exécuter sans avoir de terminal contrôlant.  
 Il est important de lancer des tâches qui doivent exécuter longtemps avec la commande nohup, 
 sinon, elles pourraient terminer de manière inattendue.
-
----
-# Java stuff
-```java
-
-class Foo {
-
-    public static void main(String[] args) throws Exception {
-    }
-}
-```
- 
-
