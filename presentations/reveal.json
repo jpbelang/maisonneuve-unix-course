@@ -2,5 +2,6 @@
   "controls": true,
   "progress": true,
   "width": "100%",
+  "height": "100%",
   "transition": "fade"
 }
