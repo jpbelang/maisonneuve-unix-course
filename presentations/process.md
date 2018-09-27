@@ -43,9 +43,20 @@ Dans le monde Unix, la base du système d'exploitation s'appelle le noyau.  C'es
 
 * Linux, en fait, n'est qu'un kernel. On bâti des distributions autour du kernel (Red Hat, Ubuntu)
 * 99% des développeurs ne développent pas vraiment dans le noyau:  ils utilisent les services du noyau.
+* On le voit se lancer au moment du démarrage.  On peut revoir cette trace avec la commande `dmesg`
 
 ---
+# Interlude
 
+* La commande la plus importante sous Unix ?   `man` ou `man -k qqchose`
+
+* StackOverflow et ses enfants sont vos amis.
+
+* On utilisera CentOS. 
+
+C'est une distribution Linux basée sur Red Hat (i.e. on utilise rpm & yum pour la gestion de l'installation du logiciel)
+
+---
 # Les processus
 
 Un processus est en fait une application qui exécute sous Linux.
@@ -56,6 +67,12 @@ Cette commande lance la commande sleep (qui dormira 10 secondes et terminera).
 On peut lancer les commandes en arrière plan.
 
 `% sleep 10 &`
+---
+# Les processus
+
+* Chaque processus a un parent.
+* Chaque processus a un environnement.
+* Chaque processus croit qu'il est propriétaire de toute la mémoire sur le système.
 
 ---
 # Lister les processus
@@ -67,7 +84,6 @@ On peut lister les processus qui exécutent sur le système avec la commande ps:
 25693 pts/0    00:00:00 ps
 ```
 ---
-
 # ps aux
 
 ```
@@ -81,6 +97,21 @@ jpbelang 25611  0.0  0.1 115572  2312 tty2     Ss+  09:01   0:00 -bash
 root     25665  0.0  0.3 158788  5692 ?        Ss   09:02   0:00 sshd: jpbelang [priv]
 jpbelang 25669  0.0  0.1 158788  2604 ?        S    09:02   0:00 sshd: jpbelang@pts/0
 jpbelang 25670  0.0  0.1 115436  2032 pts/0    Ss   09:02   0:00 -bash
+```
+---
+# ps -elf
+```
+[jpbelang@localhost ~]$ ps -elf
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+4 S root         1     0  0  80   0 - 48374 ep_pol 06:43 ?        00:00:04 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+1 S root         2     0  0  80   0 -     0 kthrea 06:43 ?        00:00:00 [kthreadd]
+1 S root         3     2  0  80   0 -     0 smpboo 06:43 ?        00:00:00 [ksoftirqd/0]
+1 S root         5     2  0  60 -20 -     0 worker 06:43 ?        00:00:00 [kworker/0:0H]
+1 S root         6     2  0  80   0 -     0 worker 06:43 ?        00:00:00 [kworker/u2:0]
+1 S root         7     2  0 -40   - -     0 smpboo 06:43 ?        00:00:00 [migration/0]
+1 S root         8     2  0  80   0 -     0 rcu_gp 06:43 ?        00:00:00 [rcu_bh]
+1 R root         9     2  0  80   0 -     0 ?      06:43 ?        00:00:02 [rcu_sched]
+1 S root        10     2  0  60 -20 -     0 rescue 06:43 ?        00:00:00 [lru-add-drain]
 ```
 ---
 # Parenthèse de sécurité
@@ -150,3 +181,72 @@ root     25918  0.1  0.0 107948   348 pts/0    S<   09:54   0:00 sleep 30
 Nohup permet à une commande d'exécuter sans avoir de terminal contrôlant.  
 Il est important de lancer des tâches qui doivent exécuter longtemps avec la commande nohup, 
 sinon, elles pourraient terminer de manière inattendue.
+
+```
+% nohup -o fichier.out commande_longue &
+```
+---
+# Les approches plus modernes aux processus
+
+---
+#  Fils d'exécution (Threads):  LWP
+
+Un fil d'exécution est un second exécutant à l'interieur d'un processus.
+
+* Ils partagent l'espace mémoire.
+* Ils partagent l'environnement.
+* Ils partagent tout ce que leur processus contient.
+
+---
+# Lister les processus avec les threads
+```
+[jpbelang@localhost ~]$ ps -elfT
+F S UID        PID  SPID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+4 S root         1     1     0  2  80   0 - 48374 ep_pol 06:43 ?        00:00:04 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+1 S root         2     2     0  0  80   0 -     0 kthrea 06:43 ?        00:00:00 [kthreadd]
+1 S root         3     3     2  0  80   0 -     0 smpboo 06:43 ?        00:00:00 [ksoftirqd/0]
+1 S root         4     4     2  0  80   0 -     0 worker 06:43 ?        00:00:00 [kworker/0:0]
+1 S root         5     5     2  0  60 -20 -     0 worker 06:43 ?        00:00:00 [kworker/0:0H]
+1 S root         6     6     2  0  80   0 -     0 worker 06:43 ?        00:00:00 [kworker/u2:0]
+1 S root         7     7     2  0 -40   - -     0 smpboo 06:43 ?        00:00:00 [migration/0]
+5 S root       572   572     1  0  76  -4 - 13877 ep_pol 06:44 ?        00:00:00 /sbin/auditd
+1 S root       572   573     1  0  76  -4 - 13877 futex_ 06:44 ?        00:00:00 /sbin/auditd
+4 S polkitd    601   601     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   626     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   628     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   631     1  0  80   0 - 134803 futex_ 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   634     1  0  80   0 - 134803 futex_ 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   641     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+```
+---
+# Lister les threads d'un processus
+```$xslt
+[jpbelang@localhost ~]$ ps -p 601 -lfT
+F S UID        PID  SPID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+4 S polkitd    601   601     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   626     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   628     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   631     1  0  80   0 - 134803 futex_ 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   634     1  0  80   0 - 134803 futex_ 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+1 S polkitd    601   641     1  0  80   0 - 134803 poll_s 06:44 ?       00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+```
+---
+# La notion de machine virtuelle
+
+---
+# La notion de container
+
+---
+# Exercices
+
+1) Trouvez les cartes d'interface réseau (NIC) qui ont été découvertes au lancement du noyau.
+
+2) Trouvez la version du noyau Linux de votre système.
+
+3) Trouvez-moi tous le processus qui sont exécute le plus de threads sur votre système.
+
+4) Trouvez le processus qui utilise le plus de mémoire.
+
+5) Listez les packages installes sur votre système.
+
+6) Installez docker.
