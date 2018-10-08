@@ -243,7 +243,7 @@ F S UID        PID  SPID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME
 
 2) Trouvez la version du noyau Linux de votre système.
 
-3) Trouvez-moi tous le processus qui sont exécute le plus de threads sur votre système.
+3) Trouvez-moi les processus qui exécutent le plus de threads sur votre système.
 
 4) Trouvez le processus qui utilise le plus de mémoire.
 
