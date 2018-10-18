@@ -190,5 +190,104 @@ UUID=5fce7a9b-bd48-41da-b4b7-f9519fd54ace /boot                   xfs     defaul
 /dev/sdb  /mnt ext4 defaults 0 0
 ``` 
 ---
+# Logging
 
+Le logging sous Linux est en fait un peu disparate.
 
+---
+# Logging (kernel)
+
+Les messages de boot sont accédés par la commande `dmesg`:
+
+```
+[jpbelang@localhost mnt]$ dmesg
+[    0.000000] Initializing cgroup subsys cpuset
+[    0.000000] Initializing cgroup subsys cpu
+[    0.000000] Initializing cgroup subsys cpuacct
+[    0.000000] Linux version 3.10.0-862.11.6.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-28) (GCC) ) #1 SMP Tue Aug 14 21:49:04 UTC 2018
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-3.10.0-862.11.6.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet LANG=en_US.UTF-8
+[    0.000000] e820: BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000007ffeffff] usable
+[    0.000000] BIOS-e820: [mem 0x000000007fff0000-0x000000007fffffff] ACPI data
+[    7.899586] ata3: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[    7.899730] ata3.00: ATA-6: VBOX HARDDISK, 1.0, max UDMA/133
+[    7.899733] ata3.00: 41943040 sectors, multi 128: LBA48 NCQ (depth 31/32)
+[    7.899955] ata3.00: configured for UDMA/133
+[    7.900081] scsi 2:0:0:0: Direct-Access     ATA      VBOX HARDDISK    1.0  PQ: 0 ANSI: 5
+[    8.208084] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[    8.208404] ata4.00: ATA-6: VBOX HARDDISK, 1.0, max UDMA/133
+[    8.208407] ata4.00: 113584 sectors, multi 128: LBA48 NCQ (depth 31/32)
+[    8.208759] ata4.00: configured for UDMA/133
+[    8.208903] scsi 3:0:0:0: Direct-Access     ATA      VBOX HARDDISK    1.0  PQ: 0 ANSI: 5
+[    8.388891] sr 1:0:0:0: [sr0] scsi3-mmc drive: 32x/32x xa/form2 tray
+[    8.388921] cdrom: Uniform CD-ROM driver Revision: 3.20
+[    8.389330] sr 1:0:0:0: Attached scsi CD-ROM sr0
+[    8.396350] sd 2:0:0:0: [sda] 41943040 512-byte logical blocks: (21.4 GB/20.0 GiB)
+[    8.396401] sd 2:0:0:0: [sda] Write Protect is off
+[    8.396404] sd 2:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[    8.396464] sd 2:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    8.398398]  sda: sda1 sda2
+[    8.398693] sd 2:0:0:0: [sda] Attached SCSI disk
+[    8.400905] sd 3:0:0:0: [sdb] 113584 512-byte logical blocks: (58.1 MB/55.4 MiB)
+[    8.400955] sd 3:0:0:0: [sdb] Write Protect is off
+[    8.400958] sd 3:0:0:0: [sdb] Mode Sense: 00 3a 00 00
+[    8.400980] sd 3:0:0:0: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    8.402186] sd 3:0:0:0: [sdb] Attached SCSI disk
+00:00:00.012924 main     Package type: LINUX_64BITS_GENERIC
+[   47.346650] 00:00:00.021673 main     5.2.18 r124319 started. Verbose level = 0
+[  130.985596] e1000: enp0s3 NIC Link is Down
+[  132.986639] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+[  281.265049] e1000: enp0s3 NIC Link is Down
+[  285.272735] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+[  331.352821] e1000: enp0s3 NIC Link is Down
+[  333.358971] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+[  974.676607] e1000: enp0s3 NIC Link is Down
+[  976.679478] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+```
+
+On y voit les disques, interfaces réseau et autres periphériques apparaitre et se configurer.
+
+---
+# Logging
+
+Le logging est géré apr un système nomme `rsyslogd`, une implémentation de syslog pour CentOS.  Il supporte toutes 
+sortes de logging, mais spécifiquement, en fichier et réseau.
+
+* Les fichiers de configuration sont dans `/etc/rsyslog.conf` et sous `/etc/rsislog.d`.
+
+* rsyslog permet de classer les messages de logging des applications par `facility` et `priority`.  On peut utiliser 
+ces champs pour router les messages dans les bons fichiers.
+
+```
+#### RULES ####
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+# The authpriv file has restricted access.
+authpriv.*                                              /var/log/secure
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+# Log cron stuff
+cron.*                                                  /var/log/cron
+# Everybody gets emergency messages, via email
+*.emerg                                                 :omusrmsg:*
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+``` 
+---
+# Logging
+
+Il y a quelques raisons pour lesquelles on ne parlera pas trop de ces choses:
+
+* Les grandes applications (java, Apache, ...) ont leur propre système de logging.
+
+* Il existe de bien meilleurs systèemes d'aggégation de logs dans des environments virtualisés.
+
+* Différentes versions de syslog opèrent de manières différentes.  Toutes supportent des concepts similaires, mais toutes
+le font de façon assez différentes.  Read ze docs.
