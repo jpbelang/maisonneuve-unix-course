@@ -90,4 +90,104 @@ Last login: Sat Oct 20 13:58:29 2018 from gateway
 
 Ici, sans configuration supplémentaire, on peut se connecter à distance.  Le mot de passe ne peut pas être intercepté sur le réseau,
 étant donné que la connexion est encryptée.
- 
+---
+# La commande lancée
+
+On lance un commande en ajoutant la commande en argument:
+
+```
+Biggly:~ jpbelang$ ssh jpbelang@host.com "ls /tmp"
+no such identity: /Users/jpbelang/.ssh/id_dsa: No such file or directory
+jpbelang@localhost's password: 
+systemd-private-9d2d75cf1aa844c1abc22a665714c6e5-chronyd.service-ngp92W
+systemd-private-bb351f3efcff4e66943fc10fc7f7a059-chronyd.service-kcrG1G
+Biggly:~ jpbelang$ 
+```
+
+Le résultat est le listing du répertoire `/tmp` sur le système distant.
+
+---
+# Éviter les mots de passe
+
+Dans le cas d'exécution a distance, il est important de ne pas avoir à pitonner son mot de passe.  Mais, en même temps, 
+on doit s'assurer que l'appelant est bel et bien la bonne personne.  Avec SSH, la solution est une paire de clés asymétriques.  
+
+Primo, il faut créer la paire de clés sur notre système local:
+
+```
+[jpbelang@localhost ~]$ ssh-keygen 
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/jpbelang/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/jpbelang/.ssh/id_rsa.
+Your public key has been saved in /home/jpbelang/.ssh/id_rsa.
+The key fingerprint is:
+SHA256:3vQms/rknZCDv4RJrDk+dd2FEQJkkLj5JHOM3iqWzXs jpbelang@localhost.localdomain
+The key's randomart image is:
++---[RSA 2048]----+
+|       ..++.. .. |
+|      . ..   ..  |
+|       =       o |
+|      *.+     . .|
+|     . BS .. . . |
+|      .=+*.o. .  |
+|     ++o=.X o    |
+|    +.=.E= O .   |
+|   . .o+.o*.o    |
++----[SHA256]-----+
+[jpbelang@localhost ~]$ 
+
+```
+
+À remarquer:  on n'a pas mis de mot de passe sur la clé.  C'est pour faire simplement.  On fera un exemple avec un mot de passe plus tard.
+
+----
+#  ssh-copy-id
+
+On copie ensuite la cle publique sur le système distant.
+```
+Biggly:~ jpbelang$ ssh-copy-id -f -i ~/.ssh/id_rsa jpbelang@host.com
+/opt/local/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/Users/jpbelang/.ssh/id_rsa.pub"
+jpbelang@localhost's password: 
+
+Number of key(s) added:        1
+
+Now try logging into the machine, with:   "ssh 'host.com'"
+and check to make sure that only the key(s) you wanted were added.
+```
+
+On se connecte ensuite sans mot de passe:
+```
+Biggly:~ jpbelang$ ssh jpbelang@host.com 
+Last login: Sat Oct 20 16:22:31 2018 from gateway
+[jpbelang@localhost ~]$ 
+```
+
+Pas de mot de passe!  L'usager est validé par un *challenge* cryptographique lancé par le serveur. 
+**Il est important de se rapeller que les clé privées et publiques configurées précédemment ne sont pas utilisées pour l'encryption de la communication**
+Elles ne sont utilisées que pour l'authentification. 
+---
+# Les tunnels
+
+Il est possible d'utiliser SSH comme tunnel sécurisé pour d'autres protocoles. Par exemple, des protocoles comme VNC (un 
+protocole de partage d'écran), IMAP (un protocole de gestion de boîtes de courrier électronique).  
+
+Supposons qu'un usager est sur un système local mais doit accéder un serveur IMAP qui est derrière un *firewall* accessible via SSH.  Supposons aussi qu'il veuille 
+se connecter en utilisant un programme de courrier normal. Il pourrait, avec SSH, se connecter à un port local qu'SSH amènerait jusqu'à un port et serveur distant.
+
+```
++---------------+       SSH         +--------------------+    IMAP   +-----------------------+
+|     Local     |------------------>|      Firewall      |---------->|     Serveur IMAP      |
++---------------+                   +--------------------+           +-----------------------+
+```   
+
+La commande pour faire cela:
+
+```
+ssh -N -L 2143:imap-server.com:143 jpbelang@firewall.com
+```
+
+Cette commande dit à SSH "Lance une connexion non-interactive (-N) qui ouvre un port local (-L) 2143 pour lequel, un fois rendu au serveur SSH, 
+tout le traffic sera routé au serveur IMAP sur le port normla IMAP (143)".  L'usager n'a qu'à pointer son client email au serveur local, port 2143
+et il aura acces à son courrier.  Toute la connexion SSH est sécurisée. 
