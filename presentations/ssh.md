@@ -191,3 +191,26 @@ ssh -N -L 2143:imap-server.com:143 jpbelang@firewall.com
 Cette commande dit à SSH "Lance une connexion non-interactive (-N) qui ouvre un port local (-L) 2143 pour lequel, un fois rendu au serveur SSH, 
 tout le traffic sera routé au serveur IMAP sur le port normla IMAP (143)".  L'usager n'a qu'à pointer son client email au serveur local, port 2143
 et il aura acces à son courrier.  Toute la connexion SSH est sécurisée. 
+---
+# Configuration
+
+Pour éviter d'avoir à répéter toutes les options, SSH offre à l'usager de stocker certaines de celle ci dans un fichier `~/.ssh/config`.  Voici un exemple:
+```
+IdentityFile ~/.ssh/id_rsa
+
+Host aws-nexus
+    HostName ec2-35-182-175-70.ca-central-1.compute.amazonaws.com
+    User ec2-user
+    IdentityFile ~/.ssh/nexus.pem
+
+Host aws-builds
+    HostName ec2-35-182-75-244.ca-central-1.compute.amazonaws.com
+    User ec2-user
+    IdentityFile ~/.ssh/nexus.pem
+
+Host vm
+    HostName localhost
+    Port 22229
+    User jpbelang
+```
+ On peut y spécifier des noms d'hôte plus courts ou plus expressifs, des fichiers d'identité et noms d'usager spécifiques par hôte
