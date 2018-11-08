@@ -1,4 +1,4 @@
-# DNS (Domain Name Service)
+# DNS 
 
 ---
 
@@ -71,6 +71,7 @@ options {
 };
 
 ```
+---
 # Fichier de zones named.conf
 ```
 zone "compagnie.com" {
@@ -175,10 +176,10 @@ also-notify { 10.2.0.112; };
 
 Sur le slave:
 ```
-zone "itzgeek.local" IN {
+zone "compagnie.com" IN {
 type slave;
 masters { 192.168.12.8; };
-file "slaves/montreal.zone.db";
+file "slaves/db.compagnie.com";
 };
 ```
 
