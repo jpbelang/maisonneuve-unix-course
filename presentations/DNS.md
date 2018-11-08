@@ -37,9 +37,9 @@ les noms de domaines acceptent des caractères Unicode, transformés vers ASCII 
 
 `yum install bind-utils`
 
-Pour les besoins du cours, on debarque SELinux.
+Pour les besoins du cours, on débarque SELinux.
 
-`sudo setenforce 0`, ou bien on edite /etc/selinux/config.
+`sudo setenforce 0`, ou bien on édite /etc/selinux/config.
 
 ---
 # Configuration de base
