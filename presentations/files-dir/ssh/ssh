@@ -1,0 +1,25 @@
+IdentityFile ~/.ssh/id_rsa
+
+Host aws-nexus
+    HostName ec2-35-182-175-70.ca-central-1.compute.amazonaws.com
+    User ec2-user
+    IdentityFile ~/.ssh/nexus.pem
+
+Host aws-builds
+    HostName ec2-35-182-75-244.ca-central-1.compute.amazonaws.com
+    User ec2-user
+    IdentityFile ~/.ssh/nexus.pem
+
+Host capsana-prod
+    HostName 192.168.200.50
+    User capsanaprod
+
+Host vm
+    HostName localhost
+    Port 22229
+    User jpbelang
+
+Host internal
+    HostName 10.3.1.104
+    ProxyJump vm
+    User jpbelang
