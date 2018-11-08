@@ -1,0 +1,19 @@
+$TTL    604800
+@       IN      SOA     ns1.compagnie.com. admin.compagnie.com. (
+             2018122701 ; Serial
+             604800     ; Refresh
+              86400     ; Retry
+            2419200     ; Expire
+             604800 )   ; Negative Cache TTL
+;
+; name servers - NS records
+                  IN      NS     ns1.compagnie.com.
+compagnie.com.    IN      NS     ns2.compagnie.com.
+compagnie.com.    IN      MX 10  mail.compagnie.com.
+
+; name servers - PTR records
+ns1.compagnie.com.          IN      A       10.3.1.1
+ns2.compagnie.com.          IN      A       10.0.2.5
+
+1.1       IN      PTR      ns1.compagnie.com.
+1.10	  IN	  PTR	   serveur-important.compagnie.com.

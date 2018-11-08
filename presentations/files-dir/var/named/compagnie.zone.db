@@ -1,0 +1,26 @@
+$TTL    604800
+@       IN      SOA     ns1.compagnie.com. admin.compagnie.com. (
+             2018122701 ; Serial
+             604800     ; Refresh
+              86400     ; Retry
+            2419200     ; Expire
+             604800 )   ; Negative Cache TTL
+;
+; name servers - NS records
+                  IN      NS     ns1.compagnie.com.
+compagnie.com.    IN      NS     ns2.compagnie.com.
+compagnie.com.    IN      MX 10  mail.compagnie.com.
+
+montreal.compagnie.com. IN NS montreal-ns1.montreal.compagnie.com.
+montreal-ns1.montreal.compagnie.com. IN A 127.0.0.1
+     
+; name servers - A records
+ns1.compagnie.com.          IN      A       10.3.1.1
+ns2.compagnie.com.          IN      A       10.3.1.2
+
+serveur-important.compagnie.com.        IN      A      10.3.1.10
+mail.compagnie.com.                     IN      A      10.3.1.11
+courrier.compagnie.com.                 IN      CNAME  mail.compagnie.com.
+www.compagnie.com.	IN	A	10.3.1.17
+			IN	A	10.3.1.18
+			IN 	A	10.3.1.19

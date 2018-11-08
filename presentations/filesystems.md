@@ -74,7 +74,7 @@ Donc notre système a deux disques physiques:  `/dev/sda` et `/dev/sdb`.  Le pre
 On pourrait partitionner notre nouveau disque `/dev/sdb`, mais ça ne ferait que nous contraindre:  chaque partition est considérée
 comme un disque séparé.  Pour les connecter, il nous faudrait utiliser LVM.
 
-Notre disque n'est pas de système de fichiers installé.  La commande utilisée pour ajouter un système de fichiers 
+Notre disque n'a pas de système de fichiers installé.  La commande utilisée pour ajouter un système de fichiers 
 est `mkfs` (MaKe FileSystem).
 
 On l'utilise comme suit:
@@ -107,7 +107,7 @@ Writing superblocks and filesystem accounting information: done
 ---
 # Les disques
 
-On peut aussi utiliser d'autres types de systàmes de fichier.
+On peut aussi utiliser d'autres types de systèmes de fichier.
 ```
 [jpbelang@localhost dev]$ sudo mkfs -t xfs /dev/sdb
 meta-data=/dev/sdb               isize=512    agcount=2, agsize=7099 blks
@@ -139,7 +139,7 @@ Root directory contains 512 slots and uses 32 sectors.
 Volume ID is b90e736f, no volume label.
 ```
 
-Voila, un systeme de fichiers vfat installé....
+Voila, un système de fichiers vfat installé....
 
 ---
 # Les disques

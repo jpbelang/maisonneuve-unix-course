@@ -1,0 +1,18 @@
+$ORIGIN .
+$TTL 1	; 1 second
+montreal.compagnie.com	IN SOA	montreal-ns1.compagnie.com. admin.montreal.compagnie.com. (
+				2018122703 ; serial
+				604800     ; refresh (1 week)
+				86400      ; retry (1 day)
+				2419200    ; expire (4 weeks)
+				1          ; minimum (1 second)
+				)
+			NS	montreal-ns1.montreal.compagnie.com.
+			A	127.0.0.1
+$ORIGIN montreal.compagnie.com.
+foo			A	10.0.3.5
+$TTL 86400	; 1 day
+hello			A	10.2.0.19
+hello2			A	10.2.0.20
+$TTL 1	; 1 second
+montreal-ns1		A	127.0.0.1
