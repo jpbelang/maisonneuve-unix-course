@@ -196,7 +196,12 @@ Dans le browser on doit ecrire:
 
     Et on doit afficher la page Bv9ARM.ch01.html.
     
+    Pour la fin du cours.
+    
     PS:  oui, ca va prendre un setup DNS.
     PPS:  oui, vous pouvez le faire à deux, du moment que les deux co-equipiers soient présents.
+    
+    
+    
 ``` 
 
