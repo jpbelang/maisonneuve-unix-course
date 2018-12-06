@@ -36,7 +36,7 @@ La configuration du serveur se fait dans `/etc/exports`.
 ```
 /home *(rw)
 /software 192.168.*(ro)
-/data *.local.company.com(rw, no_root_squash, no_all_squash), *.remote.company.com(ro)
+/data *.local.company.com(rw,no_root_squash,no_all_squash), *.remote.company.com(ro)
 ```
 
 Ensuite, y'a l'option `sync` ou `async`, qui permet des optimisations de performance en concédant de la sécurite de données.
