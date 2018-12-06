@@ -15,7 +15,7 @@ Le protocole:
 Les implémentations originales n'opéraient que sur Windows (et sa descendance).  Depuis la 
 version 2.0, la spécification de SMB, toujours propriété de Microsoft, est publiée.
 
------
+----
 # Samba
 
 Le logiciel Samba est une implémentation open-source du protocole développé en mode "clean room" 
@@ -33,12 +33,12 @@ Microsoft.
 
 On en est à la version 4.
 
-------
+----
 # Installation
 
 `yum install samba samba-client cifs-utils`
 
------
+----
 # Côté serveur
 
 La configuration de Samba se rapproche de celle de NFS:  On définit un répertoire que l'on veut partager et on lui assigne des 
@@ -55,7 +55,7 @@ paramètres de partage. La syntaxe ressemble à:
 
 En gros, chaque "partage" commence avec une section entre crochets et est suivi d'une liste de paramètres.
 
------
+----
 # Côté serveur
 
 Les partages dépassent les fichiers:  on peut aussi partager les imprimantes.
@@ -71,7 +71,7 @@ Les partages dépassent les fichiers:  on peut aussi partager les imprimantes.
 
 Les imprimantes disponibles sous Unix seront partagées aux usagers Windows.
 
------
+----
 # Côté serveur
 
 Les répertoires usagers sont l'objet d'une configuration particulière:
@@ -88,7 +88,7 @@ Les répertoires usagers sont l'objet d'une configuration particulière:
 
 Si tu t'attaches à ce "répertoire" avec ton noum d'usager, il partagera ton répertoire personnel.
 
-------
+----
 # Côté serveur (sécurite)
 
 On peut controller l'accès aux shares.
@@ -113,7 +113,7 @@ smbpasswd -e jpbelang
 	read only = yes
 	guest ok = no
 ```
-------
+----
 
 # Côté client
 
@@ -142,7 +142,7 @@ smb: \> ls
 		17811456 blocks of size 1024. 15708640 blocks available
 smb: \> 
 ```
------
+----
 # Côté client
 
 On peut aussi utiliser la commande `mount`:
@@ -164,7 +164,7 @@ password=secret
 [root@localhost jpbelang]# mount -t cifs -o credentials=/wherever/credentials //localhost/public /media
 ```
 
-------
+----
 # Courte parenthèse sur l'automonteur
 
 Il peut devenir complexe et souvent inefficace de monter tous les répertoires réseaux sur un serveru au ca ou un usager
@@ -176,7 +176,7 @@ ait besoin de s'en servir.
 
 L'automonteur est un peu une réponse à tous ces problèmes.
 
-------
+----
 
 # auto.master
 
