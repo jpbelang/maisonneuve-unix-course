@@ -194,3 +194,21 @@ scripts         -fstype=nfs4,rw,soft,intr       192.168.12.5:/scripts \
                                                 192.168.12.6:/scripts
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
